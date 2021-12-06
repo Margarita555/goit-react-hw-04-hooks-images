@@ -39,22 +39,6 @@ export default function App() {
       .finally(() => setLoading(false));
   }, [searchQuery, page]);
 
-  // useEffect(() => {
-  //   setLoading(true);
-  //   APIfetchImages({ searchQuery, page })
-  //     .then(response => {
-  //       if (response.ok) {
-  //         return response.json();
-  //       }
-  //       return Promise.reject(new Error('No images found'));
-  //     })
-  //     .then(resultImages => {
-  //       setSearchQuery([...images, ...resultImages.hits]);
-  //     })
-  //     .catch(error => setError({ error }))
-  //     .finally(() => setLoading(false));
-  // }, [page]);
-
   const handleFormSubmit = query => {
     setSearchQuery(query);
     setPage(1);

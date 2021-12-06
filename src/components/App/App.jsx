@@ -33,61 +33,33 @@ export default function App() {
         return Promise.reject(new Error('No images found'));
       })
       .then(resultImages => {
-        setImages(resultImages.hits);
-        myRef.current.scrollIntoView();
+        setImages(prevImages => [...prevImages, ...resultImages.hits]);
       })
       .catch(error => setError({ error }))
       .finally(() => setLoading(false));
-  }, [searchQuery]);
+  }, [searchQuery, page]);
 
-  useEffect(() => {
-    setLoading(true);
-    APIfetchImages({ searchQuery, page })
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        return Promise.reject(new Error('No images found'));
-      })
-      .then(resultImages => {
-        setSearchQuery([...images, ...resultImages.hits]);
-      })
-      .catch(error => setError({ error }))
-      .finally(() => setLoading(false));
-  }, [page]);
-
-  // componentDidUpdate(prevProps, prevState) {
-  //   if (
-  //     prevState.searchQuery !== this.state.searchQuery ||
-  //     prevState.page !== this.state.page
-  //   ) {
-  //     this.setState({ loading: true });
-  //     fetch(
-  //       `https://pixabay.com/api/?q=${this.state.searchQuery}&page=${this.state.page}&key=23351611-7864196d6829752dad19e3759&image_type=photo&orientation=horizontal&per_page=12`
-  //     )
-  //       .then((response) => {
-  //         if (response.ok) {
-  //           return response.json();
-  //         }
-  //         return Promise.reject(new Error("No images found"));
-  //       })
-  //       .then((resultImages) => {
-  //         if (prevState.searchQuery !== this.state.searchQuery) {
-  //           this.setState({ images: resultImages.hits });
-  //           this.myRef.current.scrollIntoView();
-  //         } else {
-  //           this.setState((prevState) => ({
-  //             images: [...prevState.images, ...resultImages.hits],
-  //           }));
-  //         }
-  //       })
-  //       .catch((error) => this.setState({ error }))
-  //       .finally(() => this.setState({ loading: false }));
-  //   }
-  // }
+  // useEffect(() => {
+  //   setLoading(true);
+  //   APIfetchImages({ searchQuery, page })
+  //     .then(response => {
+  //       if (response.ok) {
+  //         return response.json();
+  //       }
+  //       return Promise.reject(new Error('No images found'));
+  //     })
+  //     .then(resultImages => {
+  //       setSearchQuery([...images, ...resultImages.hits]);
+  //     })
+  //     .catch(error => setError({ error }))
+  //     .finally(() => setLoading(false));
+  // }, [page]);
 
   const handleFormSubmit = query => {
     setSearchQuery(query);
+    setPage(1);
+    setImages([]);
+    myRef.current.scrollIntoView();
   };
 
   const onMoreBtnClick = () => {

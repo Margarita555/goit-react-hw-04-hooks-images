@@ -1,51 +1,41 @@
-import { Component } from "react";
-import { createPortal } from "react-dom/cjs/react-dom.development";
-import { ReactComponent as CloseButton } from "../../images/closeBtn.svg";
-// import Loading from '../Loader/Loader';
-import s from "./Modal.module.css";
-const modalRoot = document.querySelector("#modal-root");
+import { useEffect } from 'react';
+import { createPortal } from 'react-dom';
+import { ReactComponent as CloseButton } from '../../images/closeBtn.svg';
+import s from './Modal.module.css';
+const modalRoot = document.querySelector('#modal-root');
 
-export default class Modal extends Component {
-  componentDidMount() {
-    window.addEventListener("keydown", this.handleKeyDown);
-  }
+export default function Modal({ toggleModal, largeImageURL, tags }) {
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  });
 
-  componentWillUnmount() {
-    window.removeEventListener("keydown", this.handleKeyDown);
-  }
-
-  handleKeyDown = (e) => {
-    if (e.code === "Escape") {
-      this.props.toggleModal();
+  const handleKeyDown = e => {
+    if (e.code === 'Escape') {
+      toggleModal();
     }
   };
-  handleBackdropClick = (e) => {
-    //  console.log(this.props)
-    // console.log(e.target.nodeName)
-    this.props.toggleModal();
-    //     if (e.currentTarget !== e.target ){
-    //     this.props.toggleModal()
-    // }
+
+  const handleBackdropClick = e => {
     if (
       e.currentTarget === e.target ||
-      e.target.nodeName === "svg" ||
-      e.target.nodeName === "path"
+      e.target.nodeName === 'svg' ||
+      e.target.nodeName === 'path'
     ) {
-      this.props.toggleModal();
+      toggleModal();
     }
   };
 
-  render() {
-    return createPortal(
-      <div className={s.overlay} onClick={this.handleBackdropClick}>
-        <CloseButton className={s.closeButton} fill="#fff" />
-        <div className={s.modal}>
-          {/* <Loading /> */}
-
-          <img src={this.props.largeImageURL} alt="img" />
-        </div>
-      </div>,
-      modalRoot
-    );
-  }
+  return createPortal(
+    <div className={s.overlay} onClick={handleBackdropClick}>
+      <CloseButton className={s.closeButton} fill="#fff" />
+      <div className={s.modal}>
+        <img src={largeImageURL} alt={tags} />
+      </div>
+    </div>,
+    modalRoot,
+  );
 }
+

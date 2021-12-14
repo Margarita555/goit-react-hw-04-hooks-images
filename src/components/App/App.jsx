@@ -1,58 +1,73 @@
-import React, { useState, useEffect } from 'react';
-import 'react-toastify/dist/ReactToastify.css';
+import React, {
+  useState,
+  useEffect,
+  useLayoutEffect,
+  useCallback,
+} from 'react';
+import APIfetchImages from '../../services/imagesApi';
 import Searchbar from '../Searchbar/Searchbar';
 import ImageGallery from '../ImageGallery/ImageGallery';
 import Button from '../Button/Button';
 import LoadingElement from '../LoadingElement/LoadingElement';
+import 'react-toastify/dist/ReactToastify.css';
 import s from './App.module.css';
 
-const APIfetchImages = ({ searchQuery = '', page = 1, pageSize = 12 }) => {
-  return fetch(
-    `https://pixabay.com/api/?q=${searchQuery}&page=${page}&key=23351611-7864196d6829752dad19e3759&image_type=photo&orientation=horizontal&per_page=${pageSize}`,
-  );
-};
-
 export default function App() {
-  const myRef = React.createRef();
   const [searchQuery, setSearchQuery] = useState('');
   const [images, setImages] = useState([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [height, setHeight] = useState(null);
+
+  const setScrollHeight = useCallback(() => {
+    const searchbarAndButtonHeight = 154;
+    const scrollHeight =
+      document.body.scrollHeight -
+      (document.body.scrollHeight -
+        (document.documentElement.clientHeight +
+          document.documentElement.scrollTop -
+          searchbarAndButtonHeight));
+    setHeight(scrollHeight);
+  }, []);
 
   useEffect(() => {
     if (!searchQuery) {
       return;
     }
     setLoading(true);
+    if (page === 1) {
+    }
     APIfetchImages({ searchQuery, page })
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        return Promise.reject(new Error('No images found'));
-      })
       .then(resultImages => {
         setImages(prevImages => [...prevImages, ...resultImages.hits]);
+        if (page > 1) {
+          setScrollHeight();
+        }
       })
       .catch(error => setError({ error }))
       .finally(() => setLoading(false));
-  }, [searchQuery, page]);
+  }, [searchQuery, page, setScrollHeight]);
+
+  useLayoutEffect(() => {
+    window.scrollTo({
+      top: height,
+      behavior: 'smooth',
+    });
+  }, [height]);
 
   const handleFormSubmit = query => {
     setSearchQuery(query);
     setPage(1);
     setImages([]);
-    myRef.current.scrollIntoView();
   };
 
   const onMoreBtnClick = () => {
     setPage(state => state + 1);
-    console.log(page);
   };
 
   return (
-    <div className={s.app} ref={myRef}>
+    <div className={s.app}>
       <Searchbar onSubmit={handleFormSubmit} />
       {loading && <LoadingElement />}
       {error && <h1 className={s.errorMessage}>{error.message}</h1>}

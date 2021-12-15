@@ -19,7 +19,7 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [height, setHeight] = useState(null);
-  console.log(height);
+
   const setScrollHeight = useCallback(() => {
     const searchbarAndButtonHeight = 150;
     const scrollHeight =

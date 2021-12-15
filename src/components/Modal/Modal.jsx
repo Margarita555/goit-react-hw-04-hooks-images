@@ -19,11 +19,10 @@ export default function Modal({ toggleModal, largeImageURL, tags }) {
   };
 
   const handleBackdropClick = e => {
-    if (
-      e.currentTarget === e.target ||
-      e.target.nodeName === 'svg' ||
-      e.target.nodeName === 'path'
-    ) {
+    const isClickedOnBackdrop = e.currentTarget === e.target;
+    const isClickedOnSvg = e.target.nodeName === 'svg';
+    const isClickedOnSvgPath = e.target.nodeName === 'path';
+    if (isClickedOnBackdrop || isClickedOnSvg || isClickedOnSvgPath) {
       toggleModal();
     }
   };
@@ -38,4 +37,3 @@ export default function Modal({ toggleModal, largeImageURL, tags }) {
     modalRoot,
   );
 }
-

@@ -24,7 +24,7 @@ export default function Searchbar({ onSubmit }) {
     <header className={s.searchbar}>
       <form className={s.form} onSubmit={handleSubmit}>
         <button type="submit" className={s.button}>
-          <img className={s.icon} src={searchIcon} alt="img" />
+          <img className={s.icon} src={searchIcon} alt="search" />
         </button>
         <ToastContainer />
         <input

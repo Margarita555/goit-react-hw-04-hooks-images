@@ -25,7 +25,7 @@ export default function ImageGalleryItem({
       {showModal && (
         <Modal
           largeImageURL={largeImageURL}
-          alt={tags}
+          tags={tags}
           toggleModal={toggleModal}
         />
       )}

@@ -13,9 +13,3 @@ export default async function APIfetchImages({
     ? await response.json()
     : Promise.reject(new Error('Not found'));
 }
-
-// const APIfetchImages = ({ searchQuery = '', page = 1, pageSize = 12 }) => {
-//   return fetch(
-//     `https://pixabay.com/api/?q=${searchQuery}&page=${page}&key=23351611-7864196d6829752dad19e3759&image_type=photo&orientation=horizontal&per_page=${pageSize}`,
-//   );
-// };

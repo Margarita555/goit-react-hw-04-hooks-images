@@ -36,8 +36,7 @@ export default function App() {
       return;
     }
     setLoading(true);
-    if (page === 1) {
-    }
+
     APIfetchImages({ searchQuery, page })
       .then(resultImages => {
         setImages(prevImages => [...prevImages, ...resultImages.hits]);

@@ -44,7 +44,9 @@ export default function App() {
           setScrollHeight();
         }
       })
-      .catch(error => setError({ error }))
+      .catch(error => {
+        setError(error);
+      })
       .finally(() => setLoading(false));
   }, [searchQuery, page, setScrollHeight]);
 
@@ -69,7 +71,7 @@ export default function App() {
     <div className={s.app}>
       <Searchbar onSubmit={handleFormSubmit} />
       {loading && <LoadingElement />}
-      {error && <h1 className={s.errorMessage}>{error.message}</h1>}
+      {error && <h1 className={s.errorMessage}>Not found</h1>}
       <ImageGallery images={images} />
       {images.length > 0 && <Button onMoreBtnClick={onMoreBtnClick} />}
     </div>

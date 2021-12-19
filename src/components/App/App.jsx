@@ -1,10 +1,10 @@
 import React, {
   useState,
   useEffect,
-  useLayoutEffect,
+  // useLayoutEffect,
   useCallback,
 } from 'react';
-import APIfetchImages from '../../services/imagesApi';
+import ApiFetchImages from '../../services/imagesApi';
 import Searchbar from '../Searchbar/Searchbar';
 import ImageGallery from '../ImageGallery/ImageGallery';
 import Button from '../Button/Button';
@@ -32,30 +32,38 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    if (!searchQuery) {
-      return;
-    }
+    if (!searchQuery) return;
     setLoading(true);
-
-    APIfetchImages({ searchQuery, page })
-      .then(resultImages => {
+    async function fetchData() {
+      try {
+        const resultImages = await ApiFetchImages(searchQuery, page);
         setImages(prevImages => [...prevImages, ...resultImages.hits]);
         if (page > 1) {
+          // scrollDown();
           setScrollHeight();
         }
-      })
-      .catch(error => {
+      } catch (error) {
         setError(error);
-      })
-      .finally(() => setLoading(false));
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
   }, [searchQuery, page, setScrollHeight]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     window.scrollTo({
       top: height,
       behavior: 'smooth',
     });
   }, [height]);
+
+  // const scrollDown = () => {
+  //   window.scrollTo({
+  //     top: document.documentElement.scrollHeight,
+  //     behavior: 'smooth',
+  //   });
+  // };
 
   const handleFormSubmit = query => {
     setSearchQuery(query);
@@ -77,3 +85,83 @@ export default function App() {
     </div>
   );
 }
+
+// import React, {
+//   useState,
+//   useEffect,
+//   useLayoutEffect,
+//   useCallback,
+// } from 'react';
+// import APIfetchImages from '../../services/imagesApi';
+// import Searchbar from '../Searchbar/Searchbar';
+// import ImageGallery from '../ImageGallery/ImageGallery';
+// import Button from '../Button/Button';
+// import LoadingElement from '../LoadingElement/LoadingElement';
+// import 'react-toastify/dist/ReactToastify.css';
+// import s from './App.module.css';
+
+// export default function App() {
+//   const [searchQuery, setSearchQuery] = useState('');
+//   const [images, setImages] = useState([]);
+//   const [page, setPage] = useState(1);
+//   const [loading, setLoading] = useState(false);
+//   const [error, setError] = useState(null);
+//   const [height, setHeight] = useState(null);
+
+//   const setScrollHeight = useCallback(() => {
+//     const searchbarAndButtonHeight = 150;
+//     const scrollHeight =
+//       document.body.scrollHeight -
+//       (document.body.scrollHeight -
+//         (document.documentElement.clientHeight +
+//           document.documentElement.scrollTop -
+//           searchbarAndButtonHeight));
+//     setHeight(scrollHeight);
+//   }, []);
+
+//   useEffect(() => {
+//     if (!searchQuery) {
+//       return;
+//     }
+//     setLoading(true);
+
+//     APIfetchImages({ searchQuery, page })
+//       .then(resultImages => {
+//         setImages(prevImages => [...prevImages, ...resultImages.hits]);
+//         if (page > 1) {
+//           setScrollHeight();
+//         }
+//       })
+//       .catch(error => {
+//         setError(error);
+//       })
+//       .finally(() => setLoading(false));
+//   }, [searchQuery, page, setScrollHeight]);
+
+//   useLayoutEffect(() => {
+//     window.scrollTo({
+//       top: height,
+//       behavior: 'smooth',
+//     });
+//   }, [height]);
+
+//   const handleFormSubmit = query => {
+//     setSearchQuery(query);
+//     setPage(1);
+//     setImages([]);
+//   };
+
+//   const onMoreBtnClick = () => {
+//     setPage(state => state + 1);
+//   };
+
+//   return (
+//     <div className={s.app}>
+//       <Searchbar onSubmit={handleFormSubmit} />
+//       {loading && <LoadingElement />}
+//       {error && <h1 className={s.errorMessage}>Not found</h1>}
+//       <ImageGallery images={images} />
+//       {images.length > 0 && <Button onMoreBtnClick={onMoreBtnClick} />}
+//     </div>
+//   );
+// }

@@ -72,16 +72,3 @@ export default function App() {
     </div>
   );
 }
-
-//     APIfetchImages({ searchQuery, page })
-//       .then(resultImages => {
-//         setImages(prevImages => [...prevImages, ...resultImages.hits]);
-//         if (page > 1) {
-//           setScrollHeight();
-//         }
-//       })
-//       .catch(error => {
-//         setError(error);
-//       })
-//       .finally(() => setLoading(false));
-//   }, [searchQuery, page, setScrollHeight]);
